@@ -15,5 +15,14 @@
   "bugs": {
     "url": "https://github.com/Jenny-code/WinnipegTransitTripPlanner/issues"
   },
-  "homepage": "https://github.com/Jenny-code/WinnipegTransitTripPlanner#readme"
+  "homepage": "https://github.com/Jenny-code/WinnipegTransitTripPlanner#readme",
+  "dependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "browser-sync": "^2.26.7",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-uglify": "^3.0.2"
+  }
 }
