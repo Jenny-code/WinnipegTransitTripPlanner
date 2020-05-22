@@ -1,103 +1,55 @@
-const apiKey = 'MRiZ8DX5wsmKOkYYg57YAIV28j9n9GfM';
-const token = 'pk.eyJ1Ijoiam9obmF0aGFubml6aW9sIiwiYSI6ImNqcG5oZjR0cDAzMnEzeHBrZGUyYmF2aGcifQ.7vAuGZ0z6CY0kXYDkcaOBg';
-const button = document.querySelector('button');
-const poiElementstart = document.querySelector('.origins');
-const poiElementend = document.querySelector('.destinations');
-const winnipegBoundingBox = "-97.32972, 49.762789, -96.951241, 49.994007"
+const token = 'pk.eyJ1IjoiamVubnljb2RlIiwiYSI6ImNrYTVzb3BiMTAwNTkycHBwbHhzYjFyYXkifQ.ZWBR9IOL-4E9M3ouFGB6Cw';
+const originForm = document.querySelector('.origin-form');
+const originsList = document.querySelector('.origins');
+const originContainer = document.querySelector('.origin-container');
+const destinationsList = document.querySelector('.destinations');
+const destinationContainer = document.querySelector('.destination-container');
 
-let lat;
-let lon;
-let map;
-
-// mapboxgl.accessToken = 'pk.eyJ1Ijoiam9obmF0aGFubml6aW9sIiwiYSI6ImNqcG5oZjR0cDAzMnEzeHBrZGUyYmF2aGcifQ.7vAuGZ0z6CY0kXYDkcaOBg';
-
-button.onclick = e => {
-  const startingPoint = document.querySelector('.origin-form');
-  const endingPoint = document.querySelector('.destination-form');
-  getLocationListstart(startingPoint.value);
-  getLocationListend(endingPoint.value); 
-
+originContainer.onsubmit = e => { 
+  const inputElement = e.target.querySelector('input');
+  displayOrigins(inputElement.value);
+  inputElement.value = "";
   e.preventDefault();
 }
 
-function getLocationListstart(query) {
-  fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?proximity=${lon},${lat}&types=poi&access_token=${token}&limit=10`)
+destinationContainer.onsubmit = e => { 
+  const inputElement = e.target.querySelector('input');
+  displayDestinations(inputElement.value);
+  inputElement.value = "";
+  e.preventDefault();
+}
+
+function displayOrigins(query) {
+  fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=10&bbox=-97.325875,49.766204,-96.953987,49.99275&access_token=${token}`)
     .then(resp => resp.json())
-    .then(json => {
-      insertIntoPOIStartList(json.features);
-    });
+    .then(data => {  
+      let originsHTML = "";
+      
+      data.features.forEach(location => {
+        originsHTML += `<li data-long="${location.geometry.coordinates[0]}" data-lat="${location.geometry.coordinates[1]}"
+          <div class="name">${location.text}</div>
+          <div>${location.properties.address}</div>
+          </li>
+        `
+      });   
+
+    originsList.innerHTML = originsHTML;
+  });
 }
-function getLocationListend(query) {
-  fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?proximity=${lon},${lat}&types=poi&access_token=${token}&limit=10`)
+
+function displayDestinations(query) {
+  fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=10&bbox=-97.325875,49.766204,-96.953987,49.99275&access_token=${token}`)
     .then(resp => resp.json())
-    .then(json => {
+    .then(data => {
+      let destinationsHTML = "";
+      data.features.forEach(location => {
+        destinationsHTML += `<li data-long="${location.geometry.coordinates[0]}" data-lat="${location.geometry.coordinates[1]}"
+          <div class="name">${location.text}</div>
+          <div>${location.properties.address}</div>
+          </li>
+        `
+      });  
 
-      insertIntoPOIEndList(json.features);
-    });
-}
-
-navigator.geolocation.getCurrentPosition(function(position) {
-  lat = position.coords.latitude;
-  lon = position.coords.longitude;
-}, () => {}, {enableHighAccuracy: true});
-
-
-function insertIntoPOIStartList(poiList) {
-  poiElementstart.textContent = "";
-  poiList.sort((a, b) => {
-    return distance(lat, lon, b.center[1], b.center[0], "K") - distance(lat, lon, a.center[1], a.center[0], "K");
+    destinationsList.innerHTML = destinationsHTML;
   });
-
-  poiList.forEach(poi => {
-    poiElementstart.insertAdjacentHTML('afterbegin', `
-      <li class="poi" data-long="${poi.center[0]}" data-lat="${poi.center[1]}">
-        <ul>
-          <li class="name">${poi.text}</div>
-          <li class="street-address">${poi.properties.address}</div>
-          <li class="distance">${distance(lat, lon, poi.center[1], poi.center[0], "K").toFixed(1)} KM</div>
-        </ul>
-      </li>
-    `);
-  });
-}
-
-function insertIntoPOIEndList(poiList) {
-  poiElementend.textContent = "";
-  poiList.sort((a, b) => {
-    return distance(lat, lon, b.center[1], b.center[0], "K") - distance(lat, lon, a.center[1], a.center[0], "K");
-  });
-
-  poiList.forEach(poi => {
-    poiElementend.insertAdjacentHTML('afterbegin', `
-      <li class="poi" data-long="${poi.center[0]}" data-lat="${poi.center[1]}">
-        <ul>
-          <li class="name">${poi.text}</div>
-          <li class="street-address">${poi.properties.address}</div>
-          <li class="distance">${distance(lat, lon, poi.center[1], poi.center[0], "K").toFixed(1)} KM</div>
-        </ul>
-      </li>
-    `);
-  });
-}
-
-function distance(lat1, lon1, lat2, lon2, unit) {
-	if ((lat1 == lat2) && (lon1 == lon2)) {
-		return 0;
-	}
-	else {
-		let radlat1 = Math.PI * lat1/180;
-		let radlat2 = Math.PI * lat2/180;
-		let theta = lon1-lon2;
-		let radtheta = Math.PI * theta/180;
-		let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-		if (dist > 1) {
-			dist = 1;
-		}
-		dist = Math.acos(dist);
-		dist = dist * 180/Math.PI;
-		dist = dist * 60 * 1.1515;
-		if (unit=="K") { dist = dist * 1.609344 }
-		if (unit=="N") { dist = dist * 0.8684 }
-		return dist;
-	}
 }
