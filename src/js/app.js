@@ -49,7 +49,26 @@ function displayDestinations(query) {
           </li>
         `
       });  
-
     destinationsList.innerHTML = destinationsHTML;
   });
 }
+
+originsList.addEventListener("click", function(e){
+  const clickedEle = e.target.closest('LI')
+  let selectedStart = originContainer.querySelectorAll("li");
+    for (selection of selectedStart){
+      selection.classList.remove("selected");
+    }
+    clickedEle.classList.add("selected");
+})
+
+destinationsList.addEventListener("click", function(e){
+  const clickedEle = e.target.closest('LI')
+  let selectedEnd = destinationContainer.querySelectorAll("li");
+  for (selection of selectedEnd){
+    selection.classList.remove("selected"); 
+  }
+  clickedEle.classList.add("selected");
+})
+
+
