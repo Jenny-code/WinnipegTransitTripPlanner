@@ -55,16 +55,15 @@ function displayDestinations(query) {
 
 function plannedTrip(){
   let startList = originContainer.querySelectorAll("li.selected");
-  console.log(startList)
   let endList = destinationContainer.querySelectorAll("li.selected");
-  console.log(endList)
 
-  let originAddress = startList[0].attributes[2].ownerElement.firstElementChild.innerHTML;
-  console.log(originAddress);
-  let destinationAddress = endList[0].attributes[2].ownerElement.firstElementChild.innerHTML;
-  console.log(destinationAddress)
+  let originAddressLat = startList[0].dataset.lat;
+  let originAddressLon = startList[0].dataset.long;
 
-  fetch`(https://api.winnipegtransit.com/v3/trip-planner.json?api-key=emmMSENp8bkUurjFPDyP&origin=${originAddress}&destination=${destinationAddress})`
+  let destinationAddressLat = endList[0].dataset.lat;
+  let destinationAddressLon = endList[0].dataset.long;
+
+  fetch(`https://api.winnipegtransit.com/v3/trip-planner.json?api-key=emmMSENp8bkUurjFPDyP&origin=geo/${originAddressLat},${originAddressLon}&destination=geo/${destinationAddressLat},${destinationAddressLon}`)
   .then(resp => resp.json())
   .then(data => {
     console.log(data)
