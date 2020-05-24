@@ -66,9 +66,50 @@ function plannedTrip(){
   fetch(`https://api.winnipegtransit.com/v3/trip-planner.json?api-key=emmMSENp8bkUurjFPDyP&origin=geo/${originAddressLat},${originAddressLon}&destination=geo/${destinationAddressLat},${destinationAddressLon}`)
   .then(resp => resp.json())
   .then(data => {
-    console.log(data)
+    let segments = data.plans[0].segments
+    busContainer.innerHTML ="";
+    
+    for (segment of segments){
+      if (segment.type === "walk"){
+        if (segment.to.stop === undefined){
+          busContainer.insertAdjacentHTML('beforeend',
+            `<ul class="my-trip">
+              <li>
+                <i class="fas fa-walking" aria-hidden="true"></i>${segment.type} for ${segment.times.durations.total} minutes
+                to stop you have reached your destination
+              </li>
+            </ul>`
+          )        
+        } else{
+          busContainer.insertAdjacentHTML('beforeend',
+          `<ul class="my-trip">
+            <li>
+              <i class="fas fa-walking" aria-hidden="true"></i>${segment.type} for ${segment.times.durations.total} minutes
+              to stop #${segment.to.stop.key} - ${segment.to.stop.name}
+            </li>
+          </ul>`
+        )
+        }
+      } else if (segment.type === "ride"){
+        busContainer.insertAdjacentHTML('beforeend',
+        `<ul class="my-trip">
+          <li>
+          <i class="fas fa-bus" aria-hidden="true"></i>Ride the ${segment.route.name} for ${segment.times.durations.riding} minutes.
+          </li>
+        </ul>`
+        )
+      }else if (segment.type === "transfer"){
+        busContainer.insertAdjacentHTML('beforeend',
+        `<ul class="my-trip">
+          <li>
+          <i class="fas fa-ticket-alt" aria-hidden="true"></i>Transfer from stop
+          #${segment.from.stop.key} - ${segment.from.stop.name} to stop #${segment.to.stop.key} - ${segment.to.stop.name}
+          </li>
+        </ul>`
+        )
+      }
+    }
   })
-
 }
 
 originsList.addEventListener("click", function(e){
@@ -90,9 +131,7 @@ destinationsList.addEventListener("click", function(e){
 })
 
 body.addEventListener('click', function(e){
-
   if (e.target.nodeName === "BUTTON" ){
     plannedTrip();
-
   }
 })
