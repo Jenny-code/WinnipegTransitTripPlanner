@@ -54,63 +54,68 @@ function displayDestinations(query) {
 }
 
 function plannedTrip(){
+  let validationThatBothFieldsFilled = document.getElementsByClassName("selected")
+  
+  if (validationThatBothFieldsFilled.length === 2){
+    let startList = originContainer.querySelectorAll("li.selected");
+    let endList = destinationContainer.querySelectorAll("li.selected");
+    let originAddressLat = startList[0].dataset.lat;
+    let originAddressLon = startList[0].dataset.long;
+    let destinationAddressLat = endList[0].dataset.lat;
+    let destinationAddressLon = endList[0].dataset.long;
 
-  let startList = originContainer.querySelectorAll("li.selected");
-  let endList = destinationContainer.querySelectorAll("li.selected");
+    fetch(`https://api.winnipegtransit.com/v3/trip-planner.json?api-key=emmMSENp8bkUurjFPDyP&origin=geo/${originAddressLat},${originAddressLon}&destination=geo/${destinationAddressLat},${destinationAddressLon}`)
+    .then(resp => resp.json())
+    .then(data => {
+      let segments = data.plans[0].segments;
+      busContainer.innerHTML ="";
 
-  let originAddressLat = startList[0].dataset.lat;
-  let originAddressLon = startList[0].dataset.long;
-
-  let destinationAddressLat = endList[0].dataset.lat;
-  let destinationAddressLon = endList[0].dataset.long;
-
-  fetch(`https://api.winnipegtransit.com/v3/trip-planner.json?api-key=emmMSENp8bkUurjFPDyP&origin=geo/${originAddressLat},${originAddressLon}&destination=geo/${destinationAddressLat},${destinationAddressLon}`)
-  .then(resp => resp.json())
-  .then(data => {
-    let segments = data.plans[0].segments;
-    busContainer.innerHTML ="";
-
-    for (segment of segments){
-      if (segment.type === "walk"){
-        if (segment.to.stop === undefined){
+      for (segment of segments){
+        if (segment.type === "walk"){
+          if (segment.to.stop === undefined){
+            busContainer.insertAdjacentHTML('beforeend',
+              `<ul class="my-trip">
+                <li>
+                  <i class="fas fa-walking" aria-hidden="true"></i>${segment.type.capitalize()} for ${segment.times.durations.total} minutes
+                  to stop you have reached your destination
+                </li>
+              </ul>`
+            )        
+          } else{
+            busContainer.insertAdjacentHTML('beforeend',
+              `<ul class="my-trip">
+                <li>
+                  <i class="fas fa-walking" aria-hidden="true"></i>${segment.type.capitalize()} for ${segment.times.durations.total} minutes
+                  to stop #${segment.to.stop.key} - ${segment.to.stop.name}
+                </li>
+              </ul>`
+            )
+          }
+        } else if (segment.type === "ride"){
           busContainer.insertAdjacentHTML('beforeend',
             `<ul class="my-trip">
               <li>
-                <i class="fas fa-walking" aria-hidden="true"></i>${segment.type.capitalize()} for ${segment.times.durations.total} minutes
-                to stop you have reached your destination
+              <i class="fas fa-bus" aria-hidden="true"></i>Ride the ${segment.route.name} for ${segment.times.durations.riding} minutes.
               </li>
             </ul>`
-          )        
-        } else{
+          )
+        }else if (segment.type === "transfer"){
           busContainer.insertAdjacentHTML('beforeend',
             `<ul class="my-trip">
               <li>
-                <i class="fas fa-walking" aria-hidden="true"></i>${segment.type.capitalize()} for ${segment.times.durations.total} minutes
-                to stop #${segment.to.stop.key} - ${segment.to.stop.name}
+              <i class="fas fa-ticket-alt" aria-hidden="true"></i>Transfer from stop
+              #${segment.from.stop.key} - ${segment.from.stop.name} to stop #${segment.to.stop.key} - ${segment.to.stop.name}
               </li>
             </ul>`
           )
         }
-      } else if (segment.type === "ride"){
-        busContainer.insertAdjacentHTML('beforeend',
-          `<ul class="my-trip">
-            <li>
-            <i class="fas fa-bus" aria-hidden="true"></i>Ride the ${segment.route.name} for ${segment.times.durations.riding} minutes.
-            </li>
-          </ul>`
-        )
-      }else if (segment.type === "transfer"){
-        busContainer.insertAdjacentHTML('beforeend',
-          `<ul class="my-trip">
-            <li>
-            <i class="fas fa-ticket-alt" aria-hidden="true"></i>Transfer from stop
-            #${segment.from.stop.key} - ${segment.from.stop.name} to stop #${segment.to.stop.key} - ${segment.to.stop.name}
-            </li>
-          </ul>`
-        )
       }
-    }
-  });
+    })
+  }else {
+
+    alert("Sorry, you must select both an origin and destination to continue.");
+    return false;
+  }
 }
 
 originsList.addEventListener("click", function(e){
