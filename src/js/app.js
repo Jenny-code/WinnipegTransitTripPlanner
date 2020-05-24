@@ -1,5 +1,4 @@
 const token = 'pk.eyJ1IjoiamVubnljb2RlIiwiYSI6ImNrYTVzb3BiMTAwNTkycHBwbHhzYjFyYXkifQ.ZWBR9IOL-4E9M3ouFGB6Cw';
-const originForm = document.querySelector('.origin-form');
 const originsList = document.querySelector('.origins');
 const originContainer = document.querySelector('.origin-container');
 const destinationsList = document.querySelector('.destinations');
