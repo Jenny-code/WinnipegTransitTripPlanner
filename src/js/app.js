@@ -30,8 +30,7 @@ function displayOrigins(query) {
         originsHTML += `<li data-long="${location.geometry.coordinates[0]}" data-lat="${location.geometry.coordinates[1]}"
           <div class="name">${location.text}</div>
           <div>${location.properties.address}</div>
-          </li>
-        `
+        </li>`
       });   
     originsList.innerHTML = originsHTML;
   });
@@ -46,8 +45,7 @@ function displayDestinations(query) {
         destinationsHTML += `<li data-long="${location.geometry.coordinates[0]}" data-lat="${location.geometry.coordinates[1]}"
           <div class="name">${location.text}</div>
           <div>${location.properties.address}</div>
-          </li>
-        `
+          </li>`
       });  
     destinationsList.innerHTML = destinationsHTML;
   });
@@ -82,30 +80,30 @@ function plannedTrip(){
           )        
         } else{
           busContainer.insertAdjacentHTML('beforeend',
-          `<ul class="my-trip">
-            <li>
-              <i class="fas fa-walking" aria-hidden="true"></i>${segment.type} for ${segment.times.durations.total} minutes
-              to stop #${segment.to.stop.key} - ${segment.to.stop.name}
-            </li>
-          </ul>`
-        )
+            `<ul class="my-trip">
+              <li>
+                <i class="fas fa-walking" aria-hidden="true"></i>${segment.type} for ${segment.times.durations.total} minutes
+                to stop #${segment.to.stop.key} - ${segment.to.stop.name}
+              </li>
+            </ul>`
+          )
         }
       } else if (segment.type === "ride"){
         busContainer.insertAdjacentHTML('beforeend',
-        `<ul class="my-trip">
-          <li>
-          <i class="fas fa-bus" aria-hidden="true"></i>Ride the ${segment.route.name} for ${segment.times.durations.riding} minutes.
-          </li>
-        </ul>`
+          `<ul class="my-trip">
+            <li>
+            <i class="fas fa-bus" aria-hidden="true"></i>Ride the ${segment.route.name} for ${segment.times.durations.riding} minutes.
+            </li>
+          </ul>`
         )
       }else if (segment.type === "transfer"){
         busContainer.insertAdjacentHTML('beforeend',
-        `<ul class="my-trip">
-          <li>
-          <i class="fas fa-ticket-alt" aria-hidden="true"></i>Transfer from stop
-          #${segment.from.stop.key} - ${segment.from.stop.name} to stop #${segment.to.stop.key} - ${segment.to.stop.name}
-          </li>
-        </ul>`
+          `<ul class="my-trip">
+            <li>
+            <i class="fas fa-ticket-alt" aria-hidden="true"></i>Transfer from stop
+            #${segment.from.stop.key} - ${segment.from.stop.name} to stop #${segment.to.stop.key} - ${segment.to.stop.name}
+            </li>
+          </ul>`
         )
       }
     }
@@ -115,10 +113,10 @@ function plannedTrip(){
 originsList.addEventListener("click", function(e){
   const origclickedEle = e.target.closest('LI')
   let selectedStart = originContainer.querySelectorAll("li");
-    for (selection of selectedStart){
-      selection.classList.remove("selected");
-    }
-    origclickedEle.classList.add("selected");
+  for (selection of selectedStart){
+    selection.classList.remove("selected");
+  }
+  origclickedEle.classList.add("selected");
 })
 
 destinationsList.addEventListener("click", function(e){
