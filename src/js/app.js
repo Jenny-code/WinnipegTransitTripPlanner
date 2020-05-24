@@ -1,3 +1,6 @@
+String.prototype.capitalize = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1)
+}
 const token = 'pk.eyJ1IjoiamVubnljb2RlIiwiYSI6ImNrYTVzb3BiMTAwNTkycHBwbHhzYjFyYXkifQ.ZWBR9IOL-4E9M3ouFGB6Cw';
 const originsList = document.querySelector('.origins');
 const originContainer = document.querySelector('.origin-container');
@@ -51,6 +54,7 @@ function displayDestinations(query) {
 }
 
 function plannedTrip(){
+
   let startList = originContainer.querySelectorAll("li.selected");
   let endList = destinationContainer.querySelectorAll("li.selected");
 
@@ -65,14 +69,14 @@ function plannedTrip(){
   .then(data => {
     let segments = data.plans[0].segments;
     busContainer.innerHTML ="";
-    
+
     for (segment of segments){
       if (segment.type === "walk"){
         if (segment.to.stop === undefined){
           busContainer.insertAdjacentHTML('beforeend',
             `<ul class="my-trip">
               <li>
-                <i class="fas fa-walking" aria-hidden="true"></i>${segment.type} for ${segment.times.durations.total} minutes
+                <i class="fas fa-walking" aria-hidden="true"></i>${segment.type.capitalize()} for ${segment.times.durations.total} minutes
                 to stop you have reached your destination
               </li>
             </ul>`
@@ -81,7 +85,7 @@ function plannedTrip(){
           busContainer.insertAdjacentHTML('beforeend',
             `<ul class="my-trip">
               <li>
-                <i class="fas fa-walking" aria-hidden="true"></i>${segment.type} for ${segment.times.durations.total} minutes
+                <i class="fas fa-walking" aria-hidden="true"></i>${segment.type.capitalize()} for ${segment.times.durations.total} minutes
                 to stop #${segment.to.stop.key} - ${segment.to.stop.name}
               </li>
             </ul>`
@@ -129,6 +133,6 @@ destinationsList.addEventListener("click", function(e){
 
 body.addEventListener('click', function(e){
   if (e.target.nodeName === "BUTTON" ){
-    plannedTrip();
+    plannedTrip();    
   }
 })
