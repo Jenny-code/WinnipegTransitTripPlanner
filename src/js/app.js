@@ -64,7 +64,7 @@ function plannedTrip(){
   fetch(`https://api.winnipegtransit.com/v3/trip-planner.json?api-key=emmMSENp8bkUurjFPDyP&origin=geo/${originAddressLat},${originAddressLon}&destination=geo/${destinationAddressLat},${destinationAddressLon}`)
   .then(resp => resp.json())
   .then(data => {
-    let segments = data.plans[0].segments
+    let segments = data.plans[0].segments;
     busContainer.innerHTML ="";
     
     for (segment of segments){
@@ -107,7 +107,7 @@ function plannedTrip(){
         )
       }
     }
-  })
+  });
 }
 
 originsList.addEventListener("click", function(e){
