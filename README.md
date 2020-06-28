@@ -5,7 +5,7 @@ With a maximum of at most 3 options for trips. If there are no available trips b
 
 Displays the estimated time between each segment of a proposed trip. The possible segments of the trip are "walk", "Transfer" and "Ride".
 
-https://github.com/Jenny-code/WinnipegTransitTripPlanner/
+https://Jenny-code.github.io/WinnipegTransitTripPlanner/
 
 To use this program
 The program is written in HTML/CSS/JavaScript. To use, open the index.html file in your browser.
